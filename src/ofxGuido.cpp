@@ -1,10 +1,11 @@
 #include "ofxGuido.h"
 
 
+// loads fonts from the system
 ofxGuido::ofxGuido(GuidoLayoutSettings& layoutSettings)
 {
 	guido = new GuidoComponent();
-	guido->GuidoInit("DroidSansMono.ttf", "GUI/guido2.ttf");
+    guido->GuidoInit(OF_TTF_SERIF.c_str(), "guido2");
 	guido->setGuidoLayoutSettings(layoutSettings);
 }
 
@@ -28,6 +29,20 @@ void ofxGuido::draw_cache(int x, int y) {
 void ofxGuido::draw(int x, int y, int w, int h) {
 	if (guido)
 		guido->draw(x, y, w, h);
+}
+
+void ofxGuido::markVoice() {
+    if (!guido) return;
+    GuidoDate date, duration;
+    date.num = 1;
+    date.denom = 4;
+//    duration.num = 1;
+//    duration.denom = 4;
+    GuidoDuration(guido->fGRHandler, &duration);
+    GuidoErrCode status = GuidoMarkVoice(guido->fARHandler, 1, date, duration, 255, 0, 0);
+    if(status < 0) {
+        ofLog() << GuidoGetErrorString(status);
+    }
 }
 
 void ofxGuido::setSize(int w, int h) {
