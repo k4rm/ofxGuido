@@ -5,7 +5,7 @@
 ofxGuido::ofxGuido(GuidoLayoutSettings& layoutSettings)
 {
 	guido = new GuidoComponent();
-    guido->GuidoInit(OF_TTF_SERIF.c_str(), "guido2");
+	guido->GuidoInit(OF_TTF_SERIF.c_str(), "guido2");
 	guido->setGuidoLayoutSettings(layoutSettings);
 }
 
@@ -32,17 +32,17 @@ void ofxGuido::draw(int x, int y, int w, int h) {
 }
 
 void ofxGuido::markVoice() {
-    if (!guido) return;
-    GuidoDate date, duration;
-    date.num = 1;
-    date.denom = 4;
-//    duration.num = 1;
-//    duration.denom = 4;
-    GuidoDuration(guido->fGRHandler, &duration);
-    GuidoErrCode status = GuidoMarkVoice(guido->fARHandler, 1, date, duration, 255, 0, 0);
-    if(status < 0) {
-        ofLog() << GuidoGetErrorString(status);
-    }
+	if (!guido) return;
+	GuidoDate date, duration;
+	date.num = 1;
+	date.denom = 4;
+//	duration.num = 1;
+//	duration.denom = 4;
+	GuidoDuration(guido->fGRHandler, &duration);
+	GuidoErrCode status = GuidoMarkVoice(guido->fARHandler, 1, date, duration, 255, 0, 0);
+	if(status < 0) {
+		ofLog() << GuidoGetErrorString(status);
+	}
 }
 
 void ofxGuido::setSize(int w, int h) {

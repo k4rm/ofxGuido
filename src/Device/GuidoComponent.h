@@ -135,7 +135,7 @@ public:
 	ARHandler	fARHandler;
 	GRHandler	fGRHandler;
 private:
-    int		fPage;
+	int		fPage;
 	bool		fResizeToMusic;
 	ofColor		fScoreColor;
 	
@@ -144,9 +144,9 @@ private:
 	GuidoLayoutSettings	fSettings;
 	int width, height;
 
-    // (prevent copy constructor and operator= being generated..)
-    GuidoComponent (const GuidoComponent&);
-    const GuidoComponent& operator= (const GuidoComponent&);
+	// (prevent copy constructor and operator= being generated..)
+	GuidoComponent (const GuidoComponent&);
+	const GuidoComponent& operator= (const GuidoComponent&);
 };
 
 
