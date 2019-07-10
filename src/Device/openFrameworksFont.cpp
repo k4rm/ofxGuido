@@ -68,7 +68,7 @@ void openFrameworksFont::GetExtent( const char * s, int count, float * width, fl
 	*height = fNativeFont->stringHeight(text);
 }
 
-void openFrameworksFont::GetExtent( unsigned char c, float * width, float * height,  VGDevice *) const
+void openFrameworksFont::GetExtent( int c, float * width, float * height,  VGDevice *) const
 {
 	string text;
 	text += wchar_t(c);
