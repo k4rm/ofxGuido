@@ -7,8 +7,6 @@
 # requires cmake
 #
 
-WD=$(dirname $0)
-
 SRC=guidolib
 DEST=../lib/guidolib
 VERSION=dev
@@ -16,7 +14,8 @@ PLATFORM=""
 
 ###
 
-cd "$WD"
+cd $(dirname $0)
+WD=$(pwd -P)
 PLATFORM=$(./ostype.sh)
 
 # get latest source 
@@ -33,11 +32,11 @@ cd "$WD"
 
 # copy static lib
 mkdir -p $DEST/lib/$PLATFORM
-cp $SRC/build/lib/libSGUIDOEngine.a $DEST/lib/$PLATFORM/
+cp -v $SRC/build/lib/libSGUIDOEngine.a $DEST/lib/$PLATFORM/
 
 # copy headers
 mkdir -p $DEST/include
-cp $SRC/src/engine/include/* $DEST/include
+cp -v $SRC/src/engine/include/* $DEST/include
 
 # cleanup
 rm -rf $SRC
