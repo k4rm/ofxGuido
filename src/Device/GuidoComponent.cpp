@@ -59,20 +59,29 @@ GuidoErrCode GuidoComponent::GuidoInit (const char* textfont, const char* guidof
 GuidoErrCode GuidoComponent::setGMNFile (const char* file )
 {
 	ARHandler arh;
-	GuidoErrCode err = GuidoParseFile (file, &arh);
-	if (err != guidoNoErr) return err;
+	GuidoErrCode err = guidoNoErr;
+	GuidoParser* parser = GuidoOpenParser();
+	arh = GuidoFile2AR(parser, file);
+	if (!arh) {
+		int l, c;
+		const char *errstr;
+		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
+		if (err != guidoNoErr) {
+			GuidoCloseParser(parser);
+			return err;
+		}
+	}
 	
 	err = setARHandler (arh);
 	if (err != guidoNoErr) GuidoFreeAR (arh);
 	else {
-		//File f(file);
-		//fGMNCode = f.loadFileAsString ();
 		ifstream outfile;
 		outfile.open (file);
 		outfile >> fGMNCode;
 		outfile.close();
 		fGMNFile = file;
 	}
+	GuidoCloseParser(parser);
 	return err;
 }
 
@@ -80,13 +89,18 @@ GuidoErrCode GuidoComponent::setGMNFile (const char* file )
 GuidoErrCode GuidoComponent::setGMNCode (const char* gmnCode )
 {
 	ARHandler arh;
-
+	GuidoErrCode err = guidoNoErr;
 	GuidoParser* parser = GuidoOpenParser();
 	arh = GuidoString2AR(parser, gmnCode);
-	int l, c;
-	const char *errstr;
-	GuidoErrCode err = GuidoParserGetErrorCode(parser, l, c, &errstr);
-
+	if(!arh) {
+		int l, c;
+		const char *errstr;
+		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
+		if (err != guidoNoErr) {
+			GuidoCloseParser(parser);
+			return err;
+		}
+	}
 	if (err != guidoNoErr) GuidoFreeAR (arh);
 	else {
 		fGMNCode = gmnCode;
@@ -107,7 +121,6 @@ GuidoErrCode GuidoComponent::setARHandler(ARHandler ar)
 		fARHandler = ar;
 		fPage = 1;
 		if (fResizeToMusic) GuidoResizePageToMusic (fGRHandler);
-		//draw();
 	}
 	else GuidoFreeAR (ar);
 	return err;
@@ -118,7 +131,6 @@ void GuidoComponent::setScoreColor(const ofColor& color)
 {
 	if (fScoreColor != color) {
 		fScoreColor = color;
-		//draw();
 	}
 }
 
@@ -128,7 +140,6 @@ void GuidoComponent::setGuidoLayoutSettings(const GuidoLayoutSettings& layoutSet
 	fSettings = layoutSettings;
 	if (fGRHandler) {
 		GuidoUpdateGR (fGRHandler, &fSettings);
-		//draw();
 	}
 }
 
@@ -169,8 +180,6 @@ int GuidoComponent::getHeight() {
 	return height;
 }
 
-
-
 //==============================================================================
 void GuidoComponent::draw (int x, int y, int w, int h)
 {
@@ -197,4 +206,3 @@ void GuidoComponent::draw (int x, int y, int w, int h)
 	if (err != guidoNoErr)
 		cerr << "error while painting: " << GuidoGetErrorString(err) << endl;
 }
-
