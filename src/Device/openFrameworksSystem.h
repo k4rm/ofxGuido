@@ -1,9 +1,7 @@
-#ifndef __openFrameworksSystem__
-#define __openFrameworksSystem__
-
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
@@ -12,9 +10,10 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
+#pragma once
 
 #include "VGSystem.h"
 
@@ -37,5 +36,3 @@ class openFrameworksSystem : public VGSystem
 	// - Font services -----------------------------------------------
 	virtual const VGFont*	CreateVGFont( const char * faceName, int size, int properties ) const;
 };
-
-#endif

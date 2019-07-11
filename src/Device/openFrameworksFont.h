@@ -1,9 +1,7 @@
-#ifndef __openFrameworksFont__
-#define __openFrameworksFont__
-
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
@@ -12,14 +10,16 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
+#pragma once
 
 #include <string>
 #include "VGFont.h"
 
-#include <ofTrueTypeFont.h>
+#include "ofConstants.h"
+#include "ofTrueTypeFont.h"
 
 // --------------------------------------------------------------
 // 		openFrameworks implementation of the VGFont class
@@ -44,5 +44,3 @@ class openFrameworksFont : public VGFont
 
 	const ofTrueTypeFont&	NativeFont() const	{ return *fNativeFont; };
 };
-
-#endif

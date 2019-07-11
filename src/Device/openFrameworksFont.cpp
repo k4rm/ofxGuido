@@ -1,6 +1,8 @@
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
+
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
 	as published by the Free Software Foundation.
@@ -8,13 +10,10 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
-
-
 #include "openFrameworksFont.h"
-#include <ofMain.h>
 
 #include <string>
 
@@ -34,12 +33,12 @@ openFrameworksFont::openFrameworksFont(const char * faceName, int size, int prop
 	float scale = (guido == faceName) ? 0.7 : 1.;
 	fNativeFont = new ofTrueTypeFont();
 	fNativeFont->setGlobalDpi(72);
-	string font = faceName;
+	std::string font = faceName;
 	if (font == "Times New Roman") // for an obscure reason, the text facename lack file extension
 		font += ".ttf";
-	cout << "Guido::openFrameworksFont loading " << font << endl;
+	std::cout << "Guido::openFrameworksFont loading " << font << std::endl;
 	if (!fNativeFont->load(font, float(size * scale)))
-		cerr << "Error: can not load font : " << font << endl;
+		std::cerr << "Error: can not load font : " << font << std::endl;
 	fName = font;
 }
 
@@ -62,7 +61,7 @@ int openFrameworksFont::GetProperties() const
 // - Symbol services ---------------------------------------------
 void openFrameworksFont::GetExtent( const char * s, int count, float * width, float * height, VGDevice *) const
 {
-	string text (s, count);
+	std::string text (s, count);
 	
 	*width = fNativeFont->stringWidth(text);
 	*height = fNativeFont->stringHeight(text);
@@ -70,7 +69,7 @@ void openFrameworksFont::GetExtent( const char * s, int count, float * width, fl
 
 void openFrameworksFont::GetExtent( int c, float * width, float * height,  VGDevice *) const
 {
-	string text;
+	std::string text;
 	text += wchar_t(c);
 	*width = fNativeFont->stringWidth(text);
 	*height = fNativeFont->stringHeight(text);

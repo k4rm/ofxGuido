@@ -1,9 +1,23 @@
+/*
+	ofxGuido example and test
+	Dan Wilcox (c) ZKM | Hertz-Lab 2019
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License (Version 2),
+	as published by the Free Software Foundation.
+	A copy of the license can be found online at www.gnu.org/licenses.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+*/
 #pragma once
 
 #include "ofMain.h"
 #include "ofxGuido.h"
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
 	public:
 		void setup();
@@ -24,4 +38,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		ofxGuido *guido;
+		std::string score = "a b c d";
+		bool updateScore = false;
 };

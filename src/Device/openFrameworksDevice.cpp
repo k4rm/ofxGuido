@@ -1,6 +1,7 @@
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (c) ZKM | Hertz-Lab 2019
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
@@ -9,19 +10,25 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
-
-
 #include "openFrameworksDevice.h"
 #include "openFrameworksFont.h"
-#include <ofMain.h>
+
+#include "ofGraphics.h"
 
 // --------------------------------------------------------------
 // static tools
-static float CoordToRadian( float x, float y )		{ return (float)atan2( x, y ); }
-static ofColor Color2ofColor (const VGColor & c)		{ return ofColor (c.mRed, c.mGreen, c.mBlue, c.mAlpha ); }
+static float CoordToRadian( float x, float y )   { return (float)atan2( x, y ); }
+
+ofColor openFrameworksDevice::Color2ofColor(const VGColor & c) {
+	return ofColor (c.mRed, c.mGreen, c.mBlue, c.mAlpha);
+}
+
+VGColor openFrameworksDevice::ofColor2Color(const ofColor & c) {
+	return VGColor (c.r, c.g, c.b, c.a);
+}
 
 // --------------------------------------------------------------
 void openFrameworksDevice::initialize()
@@ -53,7 +60,7 @@ openFrameworksDevice::openFrameworksDevice(int width_, int height_, VGSystem* sy
 	fWidth = width_;
 	fHeight = height_;
 
-	cout << "openFrameworksDevice: allocating FBO: " << fWidth << "x" << fHeight << endl;
+	std::cout << "openFrameworksDevice: allocating FBO: " << fWidth << "x" << fHeight << std::endl;
 
 	ofClear(255,255,255, 0);
 	glClearColor( 0.0, 0.0, 0.0, 0.0 );
@@ -66,7 +73,6 @@ openFrameworksDevice::openFrameworksDevice(int width_, int height_, VGSystem* sy
 	drawCache.allocate(fWidth, fHeight, GL_RGBA, 8);
 	drawCache.begin();
 	ofClear(255,255,255, 0);
-
 	drawCache.end();
 }
 
@@ -80,6 +86,7 @@ openFrameworksDevice::~openFrameworksDevice()
 bool openFrameworksDevice::BeginDraw()	{ 
 	ofPushStyle();
 	drawCache.begin();
+	ofClear(255, 255, 255, 0);
 	return true;
 }
 void openFrameworksDevice::EndDraw()		{ 
@@ -150,13 +157,13 @@ void openFrameworksDevice::Rectangle( float left,  float top, float right, float
 // - Pen & brush services --------------------------------------------
 void openFrameworksDevice::SelectPen( const VGColor & color, float witdh ) 
 {
-	ofSetColor (Color2ofColor(color));
+	ofSetColor (openFrameworksDevice::Color2ofColor(color));
 	ofSetLineWidth (witdh);
 }
 void openFrameworksDevice::PushPen( const VGColor & color, float width )
 {
 	ofPushStyle();
-	ofSetColor (Color2ofColor(color));
+	ofSetColor (openFrameworksDevice::Color2ofColor(color));
 	ofSetLineWidth (width);
 }
 void openFrameworksDevice::PopPen()
@@ -168,7 +175,7 @@ void openFrameworksDevice::SelectFillColor( const VGColor & color )
 {
 	ofFill();
 	fFillColor = color;
-	ofSetColor (Color2ofColor(color));
+	ofSetColor (openFrameworksDevice::Color2ofColor(color));
 }
 void openFrameworksDevice::PushFillColor( const VGColor & color )
 {
@@ -287,13 +294,13 @@ const VGFont *	openFrameworksDevice::GetTextFont() const			{ return fTextFont; }
 // - Text and music symbols services -------------------------------------
 void openFrameworksDevice::DrawMusicSymbol(float x, float y, unsigned int inSymbolID ) 
 {
-	string text;
+	std::string text;
 	text += wchar_t(inSymbolID);
 
-	ofSetColor(Color2ofColor(fFontColor));
+	ofSetColor(openFrameworksDevice::Color2ofColor(fFontColor));
 	ofTrueTypeFont* f = (ofTrueTypeFont*)(&static_cast<const openFrameworksFont*>(fCurrentFont)->NativeFont());
 	f->drawString (text, int(x), int(y));
-	ofSetColor( Color2ofColor(fFillColor));
+	ofSetColor( openFrameworksDevice::Color2ofColor(fFillColor));
 }
 
 void openFrameworksDevice::DrawString( float x, float y, const char * s, int inCharCount ) 
@@ -305,12 +312,12 @@ void openFrameworksDevice::DrawString( float x, float y, const char * s, int inC
 	else if (fFontAlign & kAlignRight)
 		x -= w;
 
-	string text (s, inCharCount);
+	std::string text (s, inCharCount);
 
-	ofSetColor(Color2ofColor(fFontColor));
+	ofSetColor(openFrameworksDevice::Color2ofColor(fFontColor));
 	ofTrueTypeFont* f = (ofTrueTypeFont*)(&static_cast<const openFrameworksFont*>(fCurrentFont)->NativeFont());
 	f->drawString (text, int(x), int(y));
-	ofSetColor( Color2ofColor(fFillColor));
+	ofSetColor( openFrameworksDevice::Color2ofColor(fFillColor));
 }
 
 void openFrameworksDevice::SetFontColor( const VGColor & c )			{ fFontColor = c; }

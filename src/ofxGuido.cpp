@@ -1,38 +1,56 @@
+/*
+	openFrameworks Guido interface
+	Thomas Coffy (C) IRCAM 2014
+	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License (Version 2),
+	as published by the Free Software Foundation.
+	A copy of the license can be found online at www.gnu.org/licenses.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+ */
 #include "ofxGuido.h"
 
-#include "GUIDOEngine.h"
+#include "ofTrueTypeFont.h"
+#include "ofGraphics.h"
+#include "ofLog.h"
+
 #include "GUIDOParse.h"
 #include "openFrameworksDevice.h"
 #include "openFrameworksSystem.h"
 
 static openFrameworksSystem s_system;
+static openFrameworksDevice s_device(&s_system);
 static bool s_inited = false;
 
 //------------------------------------------------------------------------------
-ofxGuido::ofxGuido() {
+ofxGuido::ofxGuido() : color(ofColor::black) {
 	if(!s_inited) {
 		ofxGuido::init();
 	}
 	GuidoGetDefaultLayoutSettings(&layoutSettings);
-	device = new openFrameworksDevice();
 }
 
 //------------------------------------------------------------------------------
 // loads fonts from the system
-ofxGuido::ofxGuido(GuidoLayoutSettings& layoutSettings) {
+ofxGuido::ofxGuido(GuidoLayoutSettings& layoutSettings) : color(ofColor::black) {
 	if(!s_inited) {
 		ofxGuido::init();
 	}
 	setLayoutSettings(layoutSettings);
-	device = new openFrameworksDevice(&s_system);
 }
 
 //------------------------------------------------------------------------------
 ofxGuido::~ofxGuido() {
 	if(arHandler) {GuidoFreeAR(arHandler);}
 	if(grHandler) {GuidoFreeGR(grHandler);}
-	if(device) {delete device;}
 }
+
+// LOAD
 
 //------------------------------------------------------------------------------
 bool ofxGuido::loadString(const std::string &gmn) {
@@ -43,17 +61,18 @@ bool ofxGuido::loadString(const std::string &gmn) {
 	if(!arh) {
 		int l, c;
 		const char *errstr;
+		std::stringstream msg("could not load string");
 		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
 		if (err != guidoNoErr) {
-			ofLogError("ofxGuido") << "could not load string "
-				<< ": line " << l << "," << c << " " << errstr;
-			GuidoCloseParser(parser);
-			return err;
+			msg << ": line " << l << "," <<  c << " " << errstr;
 		}
+		ofLogError("ofxGuido") << msg.str();
+		GuidoCloseParser(parser);
+		return false;
 	}
 	updateGR(arh);
 	GuidoCloseParser(parser);
-	return err;
+	return true;
 }
 
 //------------------------------------------------------------------------------
@@ -61,59 +80,98 @@ bool ofxGuido::loadFile(const std::string &gmnFile) {
 	ARHandler arh;
 	GuidoErrCode err = guidoNoErr;
 	GuidoParser *parser = GuidoOpenParser();
-	arh = GuidoFile2AR(parser, gmnFile.c_str());
+	arh = GuidoFile2AR(parser, ofToDataPath(gmnFile).c_str());
 	if(!arh) {
 		int l, c;
 		const char *errstr;
+		std::stringstream msg("could not load file " + gmnFile);
 		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
 		if (err != guidoNoErr) {
-			ofLogError("ofxGuido") << "could not load file " << gmnFile
-				<< ": line " << l << "," << c << " " << errstr;
-			GuidoCloseParser(parser);
-			return err;
+			msg << ": line " << l << "," <<  c << " " << errstr;
 		}
+		ofLogError("ofxGuido") << msg.str();
+		GuidoCloseParser(parser);
+		return false;
 	}
 	updateGR(arh);
 	GuidoCloseParser(parser);
-	return err;
+	return true;
 }
 
 //------------------------------------------------------------------------------
-void ofxGuido::draw(int x, int y, int w, int h) {
-	if(!grHandler) return;
-
-	ofSetColor(scoreColor);
-	GuidoOnDrawDesc desc;
-	desc.handle = grHandler;
-	desc.hdc = (VGDevice *)device;
-	desc.page = currentPage;
-	desc.scrollx = x;
-	desc.scrolly = 0;
-	desc.isprint = false;
-	desc.updateRegion.left = x;
-	desc.updateRegion.top = y;
-	desc.updateRegion.right = w;
-	desc.updateRegion.bottom = h;
-	desc.updateRegion.erase = true;
-	desc.sizex = w;
-	desc.sizey = h;
-
-	//GuidoUpdateGR(fGRHandler, &fSettings);
-	GuidoErrCode err = GuidoOnDraw(&desc);
-	if (err != guidoNoErr) {
-		ofLogError("ofxGuido") << "error in draw(): " << GuidoGetErrorString(err);
+void ofxGuido::clear() {
+	if(arHandler) {
+		GuidoFreeAR(arHandler);
+		arHandler = nullptr;
 	}
+	if(grHandler) {
+		GuidoFreeGR(grHandler);
+		grHandler = nullptr;
+	}
+	s_device.BeginDraw();
+	s_device.EndDraw();
+	//GuidoGetDefaultLayoutSettings(&layoutSettings);
+	//GuidoGetDefaultPageFormat(&pageFormat);
+	setPage(1);
+}
+
+// SCORE
+
+//------------------------------------------------------------------------------
+int ofxGuido::getPage() const {
+	return page;
 }
 
 //------------------------------------------------------------------------------
-//void ofxGuido::draw_cache(int x, int y) {
-//	if (guido)
-//		guido->getDevice()->drawCache.draw(x, y);
-//}
+bool ofxGuido::setPage(int page) {
+	if(page  < 1 || page > pageCount()) {
+		return false;
+	}
+	this->page = page;
+	redraw();
+	return true;
+}
 
 //------------------------------------------------------------------------------
-ofFbo &ofxGuido::getFbo() {
-	return device->drawCache;
+int ofxGuido::pageCount() const {
+	return grHandler ? GuidoGetPageCount (grHandler) : 0;
+}
+
+//------------------------------------------------------------------------------
+int ofxGuido::voiceCount() const {
+	return arHandler ? GuidoCountVoices (arHandler) : 0;
+}
+
+// SETTINGS
+
+//------------------------------------------------------------------------------
+void ofxGuido::setResize(bool resize) {
+	if(this->resize == resize) {return;}
+	this->resize = resize;
+	redraw();
+}
+
+//------------------------------------------------------------------------------
+bool ofxGuido::getResize() {
+	return resize;
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::setSize(float w, float h) {
+	s_device.NotifySize(w, h);
+	redraw();
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::setColor(const ofColor &color) {
+	this->color = color;
+	s_device.SetFontColor(openFrameworksDevice::ofColor2Color(color));
+	redraw();
+}
+
+//------------------------------------------------------------------------------
+ofColor &ofxGuido::getColor() {
+	return color;
 }
 
 //------------------------------------------------------------------------------
@@ -121,6 +179,7 @@ void ofxGuido::setLayoutSettings(const GuidoLayoutSettings& layoutSettings) {
 	this->layoutSettings = layoutSettings;
 	if(grHandler) {
 		GuidoUpdateGR(grHandler, &layoutSettings);
+		redraw();
 	}
 }
 
@@ -130,39 +189,66 @@ GuidoLayoutSettings &ofxGuido::getLayoutSettings() {
 }
 
 //------------------------------------------------------------------------------
+void ofxGuido::setPageFormat(const GuidoPageFormat &format) {
+	if(grHandler) {
+		GuidoGrParameters parameters;
+		parameters.layoutSettings = layoutSettings;
+		parameters.pageFormat = format;
+		GuidoUpdateGRParameterized(grHandler, &parameters);
+		redraw();
+	}
+}
+
+//------------------------------------------------------------------------------
 GuidoPageFormat &ofxGuido::getPageFormat(int page) {
 	GuidoGetPageFormat(grHandler, 1, &pageFormat);
 	return pageFormat;
 }
 
-//------------------------------------------------------------------------------
-//void ofxGuido::markVoice() {
-//	if (!guido) return;
-//	GuidoDate date, duration;
-//	date.num = 1;
-//	date.denom = 4;
-////	duration.num = 1;
-////	duration.denom = 4;
-//	GuidoDuration(guido->fGRHandler, &duration);
-//	GuidoErrCode status = GuidoMarkVoice(guido->fARHandler, 1, date, duration, 255, 0, 0);
-//	if(status < 0) {
-//		ofLog() << GuidoGetErrorString(status);
-//	}
-//}
+// DRAW
 
 //------------------------------------------------------------------------------
-void ofxGuido::setSize(int w, int h) {
-	if (guido) {
-		guido->setSize(w, h);
-		guido->getDevice()->NotifySize(w, h);
-	}
+void ofxGuido::draw(float x, float y, float w, float h) const {
+	s_device.drawCache.draw(x, y, w, h);
 }
 
 //------------------------------------------------------------------------------
-bool ofxGuido::init(const std::string &textFont, const std::string &muiscFont) {
+float ofxGuido::getWidth() const {
+	return s_device.drawCache.getWidth();
+}
+
+//------------------------------------------------------------------------------
+float ofxGuido::getHeight() const {
+	return s_device.drawCache.getHeight();
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::setAnchorPercent(float xPct, float yPct) {
+	s_device.drawCache.setAnchorPercent(xPct, yPct);
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::setAnchorPoint(float x, float y) {
+	s_device.drawCache.setAnchorPercent(x, y);
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::resetAnchor() {
+	s_device.drawCache.setAnchorPercent(0, 0);
+}
+
+//------------------------------------------------------------------------------
+ofFbo &ofxGuido::getFbo() {
+	return s_device.drawCache;
+}
+
+/// \section Util
+
+//------------------------------------------------------------------------------
+bool ofxGuido::init(const std::string &textFont, const std::string &musicFont) {
 	if(!s_inited) {
 		GuidoInitDesc desc;
-		desc.graphicDevice = &device;
+		desc.graphicDevice = &s_device;
 		desc.textFont =  (textFont == "" ? OF_TTF_SERIF.c_str() : textFont.c_str());
 		desc.musicFont = (musicFont == "" ? "guido2" : musicFont.c_str());
 		GuidoErrCode err = ::GuidoInit(&desc);
@@ -170,6 +256,7 @@ bool ofxGuido::init(const std::string &textFont, const std::string &muiscFont) {
 			ofLogError("ofxGuido") << "could not init: " << GuidoGetErrorString(err);
 			return false;
 		}
+		s_device.NotifySize(ofGetWidth(), ofGetHeight());
 		s_inited = true;
 	}
 	return true;
@@ -182,15 +269,19 @@ bool ofxGuido::updateGR(ARHandler arh) {
 	GRHandler grh;
 	GuidoErrCode err = GuidoAR2GR(arh, &layoutSettings, &grh);
 	if(err == guidoNoErr) {
-		if(GRHandler) {
-			GuidoFreeGR(GRHandler);
+		if(grHandler) {
+			GuidoFreeGR(grHandler);
 		}
-		GRHandler = grh;
-		ARHandler = arh;
-		currentPage = 1;
+		arHandler = arh;
+		grHandler = grh;
+		int pageCount = GuidoGetPageCount(grHandler);
+		if(page > pageCount) {
+			page = pageCount;
+		}
 		if(resize) {
-			GuidoResizePageToMusic(GRHandler);
+			GuidoResizePageToMusic(grHandler);
 		}
+		redraw();
 	}
 	else {
 		GuidoFreeAR(arh);
@@ -198,6 +289,32 @@ bool ofxGuido::updateGR(ARHandler arh) {
 		return false;
 	}
 	return true;
+}
+
+//------------------------------------------------------------------------------
+void ofxGuido::redraw() const {
+	if(!grHandler) return;
+
+	ofSetColor(color);
+	GuidoOnDrawDesc desc;
+	desc.handle = grHandler;
+	desc.hdc = (VGDevice *)&s_device;
+	desc.page = page;
+	desc.scrollx = 0;
+	desc.scrolly = 0;
+	desc.isprint = false;
+	desc.updateRegion.left = 0;
+	desc.updateRegion.top = 0;
+	desc.updateRegion.right = getWidth();
+	desc.updateRegion.bottom = getHeight();
+	desc.updateRegion.erase = true;
+	desc.sizex = getWidth();
+	desc.sizey = getHeight();
+
+	GuidoErrCode err = GuidoOnDraw(&desc);
+	if (err != guidoNoErr) {
+		ofLogError("ofxGuido") << "redraw error: " << GuidoGetErrorString(err);
+	}
 }
 
 // PRIVATE
