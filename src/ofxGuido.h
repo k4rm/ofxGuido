@@ -23,6 +23,7 @@
 /// \brief simple wrapper for GUIDO Engine score library
 /// parses Guido Music Notation strings or files and renders to an FBO
 /// see  http://guidolib.sourceforge.net/ for more info about Guido
+/// note: currently limited to instance at a time
 class ofxGuido : public ofBaseDraws {
 
 public:

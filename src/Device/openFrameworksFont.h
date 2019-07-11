@@ -15,7 +15,6 @@
 */
 #pragma once
 
-#include <string>
 #include "VGFont.h"
 
 #include "ofConstants.h"
@@ -30,17 +29,17 @@ class openFrameworksFont : public VGFont
 	ofTrueTypeFont* fNativeFont;
 
 	public:
-	openFrameworksFont(const char * faceName, int size, int properties);
-	virtual	~openFrameworksFont();
+		openFrameworksFont( const char * faceName, int size, int properties );
+		virtual	~openFrameworksFont();
 
-	// - VGFont services ---------------------------------------------
-	virtual	const char *	GetName() const;
-	virtual	int 			GetSize() const;
-	virtual	int				GetProperties() const;
+		// - VGFont services ---------------------------------------------------
+		virtual	const char *	GetName() const;
+		virtual	int 			GetSize() const;
+		virtual	int				GetProperties() const;
 
-	// - Symbol services ---------------------------------------------
-	virtual	void			GetExtent( const char * s, int count, float * width, float * height, VGDevice *) const;
-	virtual	void			GetExtent( int c, float * width, float * height,  VGDevice *) const;
+		// - Symbol services ---------------------------------------------------
+		virtual	void			GetExtent( const char * s, int count, float * width, float * height, VGDevice * ) const;
+		virtual	void			GetExtent( int c, float * width, float * height,  VGDevice * ) const;
 
-	const ofTrueTypeFont&	NativeFont() const	{ return *fNativeFont; };
+		const ofTrueTypeFont&	NativeFont() const	{ return *fNativeFont; };
 };

@@ -23,16 +23,16 @@
 class openFrameworksSystem : public VGSystem
 {
 	public:
-	openFrameworksSystem() {}
-	virtual	~openFrameworksSystem() {}
+		openFrameworksSystem() {}
+		virtual	~openFrameworksSystem() {}
 
-	// - VGDevice services -------------------------------------------
-	virtual VGDevice*		CreateDisplayDevice( );
-	virtual VGDevice*		CreateMemoryDevice( int inWidth, int inHeight );
-	virtual	VGDevice*		CreateMemoryDevice( const char * inPath );
-	virtual VGDevice*		CreatePrinterDevice( );
-	virtual VGDevice*		CreateAntiAliasedMemoryDevice( int inWidth, int inHeight );
+		// - VGDevice services -------------------------------------------------
+		virtual VGDevice*		CreateDisplayDevice();
+		virtual VGDevice*		CreateMemoryDevice( int inWidth, int inHeight );
+		virtual	VGDevice*		CreateMemoryDevice( const char * inPath );
+		virtual VGDevice*		CreatePrinterDevice();
+		virtual VGDevice*		CreateAntiAliasedMemoryDevice( int inWidth, int inHeight );
 
-	// - Font services -----------------------------------------------
-	virtual const VGFont*	CreateVGFont( const char * faceName, int size, int properties ) const;
+		// - Font services -----------------------------------------------------
+		virtual const VGFont*	CreateVGFont( const char * faceName, int size, int properties ) const;
 };

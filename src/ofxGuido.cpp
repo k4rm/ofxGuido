@@ -63,7 +63,7 @@ bool ofxGuido::loadString(const std::string &gmn) {
 		const char *errstr;
 		std::stringstream msg("could not load string");
 		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
-		if (err != guidoNoErr) {
+		if(err != guidoNoErr) {
 			msg << ": line " << l << "," <<  c << " " << errstr;
 		}
 		ofLogError("ofxGuido") << msg.str();
@@ -86,7 +86,7 @@ bool ofxGuido::loadFile(const std::string &gmnFile) {
 		const char *errstr;
 		std::stringstream msg("could not load file " + gmnFile);
 		err = GuidoParserGetErrorCode(parser, l, c, &errstr);
-		if (err != guidoNoErr) {
+		if(err != guidoNoErr) {
 			msg << ": line " << l << "," <<  c << " " << errstr;
 		}
 		ofLogError("ofxGuido") << msg.str();
@@ -134,12 +134,12 @@ bool ofxGuido::setPage(int page) {
 
 //------------------------------------------------------------------------------
 int ofxGuido::pageCount() const {
-	return grHandler ? GuidoGetPageCount (grHandler) : 0;
+	return grHandler ? GuidoGetPageCount(grHandler) : 0;
 }
 
 //------------------------------------------------------------------------------
 int ofxGuido::voiceCount() const {
-	return arHandler ? GuidoCountVoices (arHandler) : 0;
+	return arHandler ? GuidoCountVoices(arHandler) : 0;
 }
 
 // SETTINGS
@@ -312,7 +312,7 @@ void ofxGuido::redraw() const {
 	desc.sizey = getHeight();
 
 	GuidoErrCode err = GuidoOnDraw(&desc);
-	if (err != guidoNoErr) {
+	if(err != guidoNoErr) {
 		ofLogError("ofxGuido") << "redraw error: " << GuidoGetErrorString(err);
 	}
 }

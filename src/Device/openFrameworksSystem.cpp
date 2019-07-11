@@ -17,17 +17,15 @@
 #include "openFrameworksDevice.h"
 #include "openFrameworksFont.h"
 
-// --------------------------------------------------------------
-// 		openFrameworks implementation of the VGSystem class
-// --------------------------------------------------------------
-VGDevice* openFrameworksSystem::CreateDisplayDevice( )
+// -----------------------------------------------------------------------------
+VGDevice* openFrameworksSystem::CreateDisplayDevice()
 {
-	return new openFrameworksDevice (this);
+	return new openFrameworksDevice(this);
 }
 
 VGDevice* openFrameworksSystem::CreateMemoryDevice( int width, int height )
 {
-	return new openFrameworksDevice (width, height, this);
+	return new openFrameworksDevice(width, height, this);
 }
 
 VGDevice* openFrameworksSystem::CreateMemoryDevice( const char *  )
@@ -52,12 +50,12 @@ VGDevice* openFrameworksSystem::CreateMemoryDevice( const char *  )
 	return 0;
 }
 
-VGDevice* openFrameworksSystem::CreatePrinterDevice( )	{ return 0;	}	// don't know how to create a printer device
-VGDevice* openFrameworksSystem::CreateAntiAliasedMemoryDevice( int width, int height )	{ return CreateMemoryDevice(width, height); }
+VGDevice* openFrameworksSystem::CreatePrinterDevice()	{ return 0;	} // don't know how to create a printer device
+VGDevice* openFrameworksSystem::CreateAntiAliasedMemoryDevice( int width, int height ) { return CreateMemoryDevice(width, height); }
 
 // - Font services -----------------------------------------------
-const VGFont*	openFrameworksSystem::CreateVGFont( const char * faceName, int size, int properties ) const
+const VGFont* openFrameworksSystem::CreateVGFont( const char * faceName, int size, int properties ) const
 {
-	return new openFrameworksFont(faceName, size, properties);
+	return new openFrameworksFont( faceName, size, properties );
 }
 
