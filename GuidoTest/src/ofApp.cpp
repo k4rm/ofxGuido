@@ -26,7 +26,11 @@ void ofApp::setup() {
 
 	// render simple score
 	string gmn = "[ c d e f g ]";
-	guido->loadString(gmn);
+    if(guido->loadString(gmn)) {
+        GuidoDate start = {1, 1};
+        GuidoDate duration = {2, 1};
+        guido->markVoice(1, start, duration, ofColor::green);
+    }
 }
 
 //--------------------------------------------------------------

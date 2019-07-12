@@ -142,6 +142,19 @@ int ofxGuido::voiceCount() const {
 	return arHandler ? GuidoCountVoices(arHandler) : 0;
 }
 
+//------------------------------------------------------------------------------
+bool ofxGuido::markVoice(int voice, const GuidoDate &start,
+                         const GuidoDate &duration, const ofColor &color) {
+    GuidoErrCode err = ::GuidoMarkVoice(arHandler, voice, start, duration,
+                                        color.r, color.g, color.b);
+    if(err != guidoNoErr) {
+        ofLogWarning("ofxGuido") << "error while marking voice " << voice
+        << ": " << GuidoGetErrorString(err);
+        return false;
+    }
+    return true;
+}
+
 // SETTINGS
 
 //------------------------------------------------------------------------------

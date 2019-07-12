@@ -18,7 +18,7 @@
 #include "ofConstants.h"
 #include "ofGraphicsBaseTypes.h"
 
-#include "GUIDOEngine.h"
+#include "GUIDOEngineAdapter.h"
 
 /// \brief simple wrapper for GUIDO Engine score library
 /// parses Guido Music Notation strings or files and renders to an FBO
@@ -61,6 +61,14 @@ public:
 
 	/// \brief get the number of voices of the score
 	int voiceCount() const;
+
+    /// \brief mark notes for a voice by color within a give time range
+    /// \param voice voice index within the score, 1-indexed
+    /// \param start start time location
+    /// \param duration time duration
+    /// \param color color to apply to marked notes
+    bool markVoice(int voice, const GuidoDate &start,
+                   const GuidoDate &duration, const ofColor &color);
 
 /// \section Settings
 
@@ -131,6 +139,7 @@ public:
 
 protected:
 
+    GuidoEngineAdapter guido;
 	ARHandler arHandler = nullptr; //< abstract representation
 	GRHandler grHandler = nullptr; //< graphical representation
 	GuidoLayoutSettings	layoutSettings; //< current layout settings
