@@ -143,7 +143,7 @@ public:
 	/// \param textFont text font name, uses default "Times" font when ""
 	/// \param musicFont music font name, uses default gudio2.ttf font when ""
 	/// \return true on success
-	static bool init(const std::string &textFont="", const std::string &muiscFont="");
+	static bool init(const std::string &textFont="", const std::string &musicFont="");
 
 protected:
 
