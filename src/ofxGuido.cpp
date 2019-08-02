@@ -218,6 +218,16 @@ GuidoPageFormat &ofxGuido::getPageFormat(int page) {
 	return pageFormat;
 }
 
+//------------------------------------------------------------------------------
+ARHandler ofxGuido::getARHandler() {
+    return arHandler;
+}
+
+//------------------------------------------------------------------------------
+GRHandler ofxGuido::getGRHandler() {
+    return grHandler;
+}
+
 // DRAW
 
 //------------------------------------------------------------------------------

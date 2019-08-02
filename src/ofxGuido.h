@@ -110,6 +110,14 @@ public:
 	/// \returns format struct on success or empty format struct on error
 	GuidoPageFormat &getPageFormat(int page=1);
 
+    /// \brief access to the underlying Guido ARHandler
+    /// \returns current ARHandler or nullptr if not created
+    ARHandler getARHandler();
+
+    /// \brief access to the underlying Guido GRHandler
+    /// \returns current GRHandler or nullptr if not created
+    GRHandler getGRHandler();
+
 /// \section Draw
 
 	void draw(float x, float y, float w, float h) const;
@@ -139,7 +147,6 @@ public:
 
 protected:
 
-    GuidoEngineAdapter guido;
 	ARHandler arHandler = nullptr; //< abstract representation
 	GRHandler grHandler = nullptr; //< graphical representation
 	GuidoLayoutSettings	layoutSettings; //< current layout settings
