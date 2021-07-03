@@ -1,9 +1,7 @@
-#ifndef __openFrameworksFont__
-#define __openFrameworksFont__
-
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
@@ -12,14 +10,15 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
+#pragma once
 
-#include <string>
 #include "VGFont.h"
 
-#include <ofTrueTypeFont.h>
+#include "ofConstants.h"
+#include "ofTrueTypeFont.h"
 
 // --------------------------------------------------------------
 // 		openFrameworks implementation of the VGFont class
@@ -30,19 +29,17 @@ class openFrameworksFont : public VGFont
 	ofTrueTypeFont* fNativeFont;
 
 	public:
-	openFrameworksFont(const char * faceName, int size, int properties);
-	virtual	~openFrameworksFont();
+		openFrameworksFont( const char * faceName, int size, int properties );
+		virtual	~openFrameworksFont();
 
-	// - VGFont services ---------------------------------------------
-	virtual	const char *	GetName() const;
-	virtual	int 			GetSize() const;
-	virtual	int				GetProperties() const;
+		// - VGFont services ---------------------------------------------------
+		virtual	const char *	GetName() const;
+		virtual	int 			GetSize() const;
+		virtual	int				GetProperties() const;
 
-	// - Symbol services ---------------------------------------------
-	virtual	void			GetExtent( const char * s, int count, float * width, float * height, VGDevice *) const;
-	virtual	void			GetExtent( int c, float * width, float * height,  VGDevice *) const;
+		// - Symbol services ---------------------------------------------------
+		virtual	void			GetExtent( const char * s, int count, float * width, float * height, VGDevice * ) const;
+		virtual	void			GetExtent( int c, float * width, float * height,  VGDevice * ) const;
 
-	const ofTrueTypeFont&	NativeFont() const	{ return *fNativeFont; };
+		const ofTrueTypeFont&	NativeFont() const	{ return *fNativeFont; };
 };
-
-#endif

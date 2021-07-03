@@ -1,6 +1,7 @@
 /*
 	GUIDO Library
-	Copyright (C) 2012	Grame
+	Copyright (C) 2012 Grame
+ 	Updated by Dan Wilcox (C) ZKM | Hertz-Lab 2019
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License (Version 2), 
@@ -9,28 +10,22 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 	Lesser General Public License for more details.
 */
-
-
-#include "openFrameworksFont.h"
-#include "openFrameworksDevice.h"
 #include "openFrameworksSystem.h"
+#include "openFrameworksDevice.h"
+#include "openFrameworksFont.h"
 
-#include <ofMain.h>
-
-// --------------------------------------------------------------
-// 		openFrameworks implementation of the VGSystem class
-// --------------------------------------------------------------
-VGDevice* openFrameworksSystem::CreateDisplayDevice( )
+// -----------------------------------------------------------------------------
+VGDevice* openFrameworksSystem::CreateDisplayDevice()
 {
-	return new openFrameworksDevice (this);
+	return new openFrameworksDevice(this);
 }
 
 VGDevice* openFrameworksSystem::CreateMemoryDevice( int width, int height )
 {
-	return new openFrameworksDevice (width, height, this);
+	return new openFrameworksDevice(width, height, this);
 }
 
 VGDevice* openFrameworksSystem::CreateMemoryDevice( const char *  )
@@ -55,12 +50,12 @@ VGDevice* openFrameworksSystem::CreateMemoryDevice( const char *  )
 	return 0;
 }
 
-VGDevice* openFrameworksSystem::CreatePrinterDevice( )	{ return 0;	}	// don't know how to create a printer device
-VGDevice* openFrameworksSystem::CreateAntiAliasedMemoryDevice( int width, int height )	{ return CreateMemoryDevice(width, height); }
+VGDevice* openFrameworksSystem::CreatePrinterDevice()	{ return 0;	} // don't know how to create a printer device
+VGDevice* openFrameworksSystem::CreateAntiAliasedMemoryDevice( int width, int height ) { return CreateMemoryDevice(width, height); }
 
 // - Font services -----------------------------------------------
-const VGFont*	openFrameworksSystem::CreateVGFont( const char * faceName, int size, int properties ) const
+const VGFont* openFrameworksSystem::CreateVGFont( const char * faceName, int size, int properties ) const
 {
-	return new openFrameworksFont(faceName, size, properties);
+	return new openFrameworksFont( faceName, size, properties );
 }
 
